@@ -1,5 +1,5 @@
-import React, { Component, ChangeEvent } from 'react'
-import getData, { IData } from '../../utilities/getData'
+import React, { ChangeEvent, useState } from 'react'
+import getData, { IHit } from '../../utilities/getData'
 
 import SearchForm from './SearchForm'
 import ImageGallery from './ImageGallery'
@@ -7,82 +7,63 @@ import Button from './Button'
 import Loader from './Loader'
 import Modal from './Modal'
 
-interface IGallery {
-  page: number
-  per_page: number
-  q: string
-  loading: boolean
-  errorMessage: string
-  hits: IData['hits']
-  total: number
-  totalHits: number
-  isModalOpen: boolean
-  modalUrl: string
-}
-export class Gallery extends Component {
-  state: IGallery = {
-    page: 1,
-    per_page: 12,
-    q: '',
-    loading: false,
-    errorMessage: '',
-    hits: [],
-    total: 0,
-    totalHits: 0,
-    isModalOpen: false,
-    modalUrl: ''
-  }
+function Gallery (): JSX.Element {
+  const [page, setPage] = useState(1)
+  const perPage = 12
+  const [q, setQ] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [hits, setHits] = useState<IHit[]>([])
+  const [total, setTotal] = useState(0)
+  const [totalHits, setTotalHits] = useState(0)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalURL, setModalURL] = useState('')
 
-  updateQ = (e: ChangeEvent<HTMLInputElement>): void => {
+  const updateQ = (e: ChangeEvent<HTMLInputElement>): void => {
     const q = (e.target as HTMLInputElement).value
-    this.setState({ q })
+    setQ(q)
   }
 
-  updateState = async (): Promise<void> => {
-    this.setState({ loading: true })
-    const { per_page: perPage, q } = this.state
+  const updateState = async (): Promise<void> => {
+    setLoading(true)
     const data = await getData({ per_page: perPage, page: 1, q })
-      .catch((error) => this.setState({ errorMessage: error.message }))
-    this.setState({ loading: false, hits: data?.hits, total: data?.total, totalHits: data?.totalHits, page: 2 })
-  }
-
-  loadMore = async (): Promise<void> => {
-    this.setState({ loading: true })
-    const { page, per_page: perPage, q } = this.state
-    const data = await getData({ per_page: perPage, page, q })
-      .catch((error) => this.setState({ errorMessage: error.message }))
+      .catch((error) => setErrorMessage(error.message))
     if (data !== undefined) {
-      this.setState((prevState: IGallery) => {
-        console.log(prevState)
-        return {
-          loading: false,
-          hits: [...prevState.hits, ...data?.hits],
-          total: data?.total,
-          totalHits: data?.totalHits,
-          page: page + 1
-        }
-      })
+      setHits(data?.hits)
+      setTotal(data?.total)
+      setTotalHits(data?.totalHits)
+      setPage(2)
+      setLoading(false)
     }
   }
 
-  toggleModal = (modalUrl = ''): void => {
-    this.setState((prevState: IGallery) => ({
-      modalUrl,
-      isModalOpen: !prevState.isModalOpen
-    }))
+  const loadMore = async (): Promise<void> => {
+    setLoading(true)
+    const data = await getData({ per_page: perPage, page, q })
+      .catch((error) => setErrorMessage(error.message))
+    if (data !== undefined) {
+      setHits([...hits, ...data?.hits])
+      setTotal(data?.total)
+      setTotalHits(data?.totalHits)
+      setPage(page + 1)
+      setLoading(false)
+    }
   }
 
-  render (): JSX.Element {
-    const pages = Math.ceil(this.state.totalHits / this.state.per_page)
-    return <>
-      {this.state.loading && <Loader />}
-      <SearchForm updateQ={this.updateQ} q={this.state.q} updateState={this.updateState} />
-      <ImageGallery hits={this.state.hits} toggleModal={this.toggleModal}/>
-      {(this.state.hits.length > 0) && (pages > this.state.page) && <Button loadMore={this.loadMore}/>}
-      {(this.state.isModalOpen) && <Modal modalUrl={this.state.modalUrl} toggleModal={this.toggleModal} />}
+  const toggleModal = (modalUrl = ''): void => {
+    setModalURL(modalUrl)
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const pages = Math.ceil(totalHits / perPage)
+  return <>
+      {loading && <Loader />}
+      <SearchForm updateQ={updateQ} q={q} updateState={updateState} />
+      <ImageGallery hits={hits} toggleModal={toggleModal} />
+      {(hits.length > 0) && (pages > page) && <Button loadMore={loadMore} />}
+      {(isModalOpen) && <Modal modalUrl={modalURL} toggleModal={toggleModal} />}
 
     </>
-  }
 }
 
 export default Gallery

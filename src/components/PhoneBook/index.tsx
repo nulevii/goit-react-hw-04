@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { nanoid } from 'nanoid'
 
 import style from './style.module.css'
@@ -7,77 +7,62 @@ import ContactForm from './ContactForm'
 import ContactList from './ContactList'
 import Filter from './Filter'
 
-interface StateInterface {
-  contacts: Array<{ name: string, number: string, id: string }>
-  filter: string
-}
+interface IContact { name: string, number: string, id: string }
 
-export class index extends Component {
-  state: StateInterface = {
-    contacts: [{ id: 'id-1', name: 'Johnny Silverhand', number: '459-20-77' }],
-    filter: ''
-  }
+function PhoneBook (): JSX.Element {
+  const [contacts, setContacts] = useState<IContact[]>([{ id: 'id-1', name: 'Johnny Silverhand', number: '459-20-77' }])
+  const [filter, setFilter] = useState('')
 
-  componentDidMount (): void {
+  useEffect((): void => {
     const contacts = JSON.parse((localStorage.getItem('contacts')) ??
     '[{"id":"id-1","name":"Johnny Silverhand","number":"459-20-77"}]')
 
-    this.setState({
-      contacts,
-      filter: ''
-    })
-  }
+    setContacts(contacts)
+    setFilter('')
+  })
 
-  onAddContact = (name: string, number: string): void => {
-    if (this.state.contacts.some((contact) => contact.name === name)) {
+  const onAddContact = (name: string, number: string): void => {
+    if (contacts.some((contact) => contact.name === name)) {
       alert(`${name} is already in contacts.`)
       return
     }
-
-    this.setState((prevState: StateInterface) => {
-      const newContacts = [...prevState.contacts, { name, number, id: nanoid() }]
-      localStorage.setItem('contacts', JSON.stringify(newContacts))
-      return { contacts: newContacts }
-    })
+    const newContacts = [...contacts, { name, number, id: nanoid() }]
+    localStorage.setItem('contacts', JSON.stringify(newContacts))
+    setContacts(newContacts)
   }
 
-  onFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    this.setState({
-      filter: e.target.value
-    })
+  const onFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setFilter(e.target.value)
   }
 
-  onDeleteContact = (contactId: string): void => {
-    const contactID = this.state.contacts.findIndex(
+  const onDeleteContact = (contactId: string): void => {
+    const contactID = contacts.findIndex(
       ({ id }) => id === contactId
     )
-    this.setState((prevState: StateInterface) => {
-      const newContacts = [
-        ...prevState.contacts.slice(0, contactID),
-        ...prevState.contacts.slice(contactID + 1)
-      ]
-      localStorage.setItem('contacts', JSON.stringify(newContacts))
-      return ({ contacts: newContacts })
-    })
+
+    const newContacts = [
+      ...contacts.slice(0, contactID),
+      ...contacts.slice(contactID + 1)
+    ]
+    localStorage.setItem('contacts', JSON.stringify(newContacts))
+    setContacts(newContacts)
   }
 
-  render (): JSX.Element {
-    return (
+  return (
       <section className={style.phoneBookSection}>
         <h1 className={style.title}> Phonebook </h1>
-        <ContactForm onAddContact={this.onAddContact} />
+        <ContactForm onAddContact={onAddContact} />
         <div className={style.contacts}>
           <h2 className={style.contactsCaption}>CONTACTS</h2>
-          <Filter onFilterChange={this.onFilterChange}></Filter>
+          <Filter onFilterChange={onFilterChange}></Filter>
           <ContactList
-            contacts={this.state.contacts}
-            filter={this.state.filter}
-            onDeleteContact={this.onDeleteContact}
+            contacts={contacts}
+            filter={filter}
+            onDeleteContact={onDeleteContact}
           ></ContactList>
         </div>
       </section>
-    )
-  }
+  )
 }
 
-export default index
+export default PhoneBook
