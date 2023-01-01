@@ -1,0 +1,204 @@
+@font-face {
+  font-family: Cyber;
+  src: url("https://assets.codepen.io/605876/Blender-Pro-Bold.otf");
+  font-display: swap;
+}
+
+.phoneBookSection {
+  background: linear-gradient(90deg, #f5ed00 70%, #e6de00 70%), #fff700;
+  font-size: 1.6em;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  width: 800px;
+  margin: auto;
+  margin-top: 30px;
+  padding: 40px;
+
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  color: #010101;
+}
+.title {
+  font-family: "Cyber", sans-serif;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.phoneBookForm  {
+
+  text-align: end;
+  margin-bottom: 30px;
+  padding: 15px;
+  background-color: rgb(241, 245, 12);
+}
+
+.contacts{
+  background-color: rgb(241, 245, 12);
+  padding: 15px;
+}
+
+.contactsCaption{
+  font-family: "Cyber", sans-serif;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 10px;
+  text-align: end;
+}
+
+.contactsList {
+  text-align: end;
+  font-family: "Cyber", sans-serif;
+  padding: 0;
+}
+
+.contactsList li {
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+.contactName {
+  text-align: start;
+  width: 350px;
+  display: inline-block;
+}
+.contactNumber{
+  text-align: start;
+  width: 230px;
+  display: inline-block;
+}
+
+.inputCaption{
+  font-family: "Cyber", sans-serif;
+  margin: 0;
+  margin-top: 10px;
+  font-weight: 500;
+}
+.phoneBookForm input,.textInput {
+  background-color: transparent;
+  display: block;
+  border: 0;
+  box-shadow: none;
+  color: #e8615a;;
+  font-family: "Rajdhani", sans-serif;;
+  font-size: 1rem;
+  letter-spacing: 0.045em;
+  outline: none;
+  padding: 0.5rem;
+  resize: none;
+  border: 1px solid #e8615a;
+  background-color: #1e181e;
+  width: 100%;
+}
+
+.cyberButton,
+.cyberButton {
+  position: relative;
+  cursor: pointer;
+  right: 4px;
+  margin-top: 40px;
+  width: 220px;
+  height: 60px;
+  line-height: 20px;
+  font-size: 20px;
+  font-family: "Cyber", sans-serif;
+  background: linear-gradient(45deg, transparent 5%, #ec1313 5%);
+  border: 0;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 3px;
+  box-shadow: 4px 0px 0px #0df2f2;
+  outline: transparent;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.small {
+  width: 100px;
+  margin-left: 10px;
+
+}
+
+
+.cyberButton:after {
+  --slice-0: inset(50% 50% 50% 50%);
+  --slice-1: inset(80% -6px 0 0);
+  --slice-2: inset(50% -6px 30% 0);
+  --slice-3: inset(10% -6px 85% 0);
+  --slice-4: inset(40% -6px 43% 0);
+  --slice-5: inset(80% -6px 5% 0);
+
+  content: "ALTERNATE TEXT";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 3%,
+    #00e6f6 3%,
+    #00e6f6 5%,
+    #ff013c 5%
+  );
+  text-shadow: -3px -3px 0px #f8f005, 3px 3px 0px #00e6f6;
+  clip-path: var(--slice-0);
+}
+
+.cyberButton:hover:after {
+  animation: 1s glitch;
+  animation-timing-function: steps(2, end);
+}
+
+@keyframes glitch {
+  0% {
+    clip-path: var(--slice-1);
+    transform: translate(-20px, -10px);
+  }
+  10% {
+    clip-path: var(--slice-3);
+    transform: translate(10px, 10px);
+  }
+  20% {
+    clip-path: var(--slice-1);
+    transform: translate(-10px, 10px);
+  }
+  30% {
+    clip-path: var(--slice-3);
+    transform: translate(0px, 5px);
+  }
+  40% {
+    clip-path: var(--slice-2);
+    transform: translate(-5px, 0px);
+  }
+  50% {
+    clip-path: var(--slice-3);
+    transform: translate(5px, 0px);
+  }
+  60% {
+    clip-path: var(--slice-4);
+    transform: translate(5px, 10px);
+  }
+  70% {
+    clip-path: var(--slice-2);
+    transform: translate(-10px, 10px);
+  }
+  80% {
+    clip-path: var(--slice-5);
+    transform: translate(20px, -10px);
+  }
+  90% {
+    clip-path: var(--slice-1);
+    transform: translate(-10px, 0px);
+  }
+  100% {
+    clip-path: var(--slice-1);
+    transform: translate(0);
+  }
+}
