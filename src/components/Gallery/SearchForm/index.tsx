@@ -1,18 +1,20 @@
-import React, { ChangeEventHandler, FormEventHandler } from 'react'
+import React, { FormEventHandler, useRef } from 'react'
 import style from '../styles.module.css'
 function SearchForm ({ updateQ, q, updateState }:
-{ updateQ: ChangeEventHandler, q: string, updateState: () => Promise<void> }): JSX.Element {
+{ updateQ: (qValue: string) => void, q: string, updateState: () => Promise<void> }): JSX.Element {
+  const searchValue = useRef<null | HTMLInputElement>(null)
   const onUpdateState: FormEventHandler<HTMLFormElement> = (e): void => {
     e.preventDefault()
-    void updateState()
+    if (searchValue.current !== null) {
+      updateQ(searchValue.current.value)
+    }
   }
   return (
     <header className={style.searchForm}>
   <form onSubmit={onUpdateState} className="form">
   <button type="submit">&#128269; </button>
     <input
-      onChange={updateQ}
-      value={q}
+      ref={searchValue}
       className="input"
       type="text"
       autoComplete="off"

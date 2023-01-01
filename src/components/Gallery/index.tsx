@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import getData, { IHit } from '../../utilities/getData'
 
 import SearchForm from './SearchForm'
@@ -19,10 +19,19 @@ function Gallery (): JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalURL, setModalURL] = useState('')
 
-  const updateQ = (e: ChangeEvent<HTMLInputElement>): void => {
-    const q = (e.target as HTMLInputElement).value
-    setQ(q)
+  const updateQ = (qValue: string): void => {
+    setQ(qValue)
   }
+
+  useEffect(() => {
+    if (q === '') return
+    void updateState()
+  }, [q])
+  useEffect(() => {
+    if (page === 1) return
+    void loadMore()
+  }
+  , [page])
 
   const updateState = async (): Promise<void> => {
     setLoading(true)
@@ -32,7 +41,6 @@ function Gallery (): JSX.Element {
       setHits(data?.hits)
       setTotal(data?.total)
       setTotalHits(data?.totalHits)
-      setPage(2)
       setLoading(false)
     }
   }
@@ -45,7 +53,6 @@ function Gallery (): JSX.Element {
       setHits([...hits, ...data?.hits])
       setTotal(data?.total)
       setTotalHits(data?.totalHits)
-      setPage(page + 1)
       setLoading(false)
     }
   }
@@ -55,12 +62,16 @@ function Gallery (): JSX.Element {
     setIsModalOpen(!isModalOpen)
   }
 
+  const changePage = (): void => {
+    setPage(page + 1)
+  }
+
   const pages = Math.ceil(totalHits / perPage)
   return <>
       {loading && <Loader />}
       <SearchForm updateQ={updateQ} q={q} updateState={updateState} />
-      <ImageGallery hits={hits} toggleModal={toggleModal} />
-      {(hits.length > 0) && (pages > page) && <Button loadMore={loadMore} />}
+      <ImageGallery hits={hits} toggleModal={toggleModal}/>
+      {(hits.length > 0) && (pages > page) && <Button changePage={changePage}/>}
       {(isModalOpen) && <Modal modalUrl={modalURL} toggleModal={toggleModal} />}
 
     </>
