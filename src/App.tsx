@@ -1,19 +1,26 @@
-import React, { useState } from 'react'
-import style from './App.module.css'
-import Task from './components/Tasks'
+import React from 'react'
+// import { Suspense, lazy } from "react";
+import { Routes, Route, Navigate } from 'react-router-dom'
+
+import Home from './pages/Home'
+import Layout from './components/Layout/Layout'
+import MovieDetails from './pages/MovieDetails'
+import SearchPage from './pages/SearchPage'
+import Cast from './pages/Cast'
+import Reviews from './pages/Reviews'
 function App (): JSX.Element {
-  const [taskNumber, setTaskNumber] = useState(0)
   return (
-    <>
-      <section className={style.wrapper}>
-      <div className={style.buttons}>
-        <button className={style.taskButton} onClick={() => { setTaskNumber(1) }}>Task One</button>
-        <button className={style.taskButton} onClick={() => { setTaskNumber(2) }}>Task Two</button>
-        <button className={style.taskButton} onClick={() => { setTaskNumber(3) }}>Task Three</button>
-      </div>
-      <Task taskNumber={taskNumber} />
-      </section>
-    </>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path='/' element={<Home />} />
+        <Route path='/movies' element={<SearchPage />} />
+        <Route path="/movies/:movieId" element={<MovieDetails />}>
+          <Route path="cast" element={<Cast />} />
+          <Route path="reviews" element={<Reviews />} />
+        </Route>
+      </Route>
+      <Route path='*' element={<Navigate to="/" />} />
+    </Routes>
   )
 }
 

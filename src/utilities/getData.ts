@@ -1,55 +1,100 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
+import { IPopularFilms, ISelectedFilm, ICast, IReviews } from './interfaces'
 
-export interface DataParamsInterface {
-  per_page: number
-  page: number
-  q: string
-}
-export interface IHit {
-  id: number
-  pageURL: string
-  type: string
-  tags: string
-  previewURL: string
-  previewWidth: number
-  previewHeight: number
-  webformatURL: string
-  webformatWidth: number
-  webformatHeight: number
-  largeImageURL: string
-  imageWidth: number
-  imageHeight: number
-  imageSize: number
-  views: number
-  downloads: number
-  collections: number
-  likes: number
-  comments: number
-  user_id: number
-  user: string
-  userImageURL: string
-}
-
-export interface IData {
-  total: number
-  totalHits: number
-  hits: IHit[]
-}
-const getData = async <T>(params: DataParamsInterface): Promise<IData | undefined > => {
-  const url = 'https://pixabay.com/api/'
-  const key = '27364037-494c2c1537a13aa746fb2bd48'
-  const imageType = 'photo'
-  const orientation = 'horizontal'
-  const safesearch = true
+const API_KEY = 'a8c13239d5351cd341496e4bdbeed27b'
+export const getTrending = async ({ pageNumber }: { pageNumber: number }): Promise<IPopularFilms | undefined> => {
+  const trendingLink = 'https://api.themoviedb.org/3/trending/movie/week'
   try {
-    const data = await axios.get(url, {
-      params: { key, image_type: imageType, orientation, safesearch, ...params }
+    const data: IPopularFilms = await axios.get(trendingLink, {
+      params: {
+        api_key: API_KEY,
+        include_adult: false,
+        page: pageNumber
+      }
     })
-    return data.data
+    return data
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error.message)
-    }
+    let message = 'Unknown Error'
+    if (error instanceof Error) message = error.message
+    console.error(message)
   }
 }
-export default getData
+
+export const getSearchMovies = async ({ pageNumber, query = '' }: { pageNumber: number, query: string }): Promise<IPopularFilms | undefined> => {
+  const searchLink = 'https://api.themoviedb.org/3/search/movie'
+  try {
+    const data: IPopularFilms = await axios.get(searchLink, {
+      params: {
+        api_key: API_KEY,
+        include_adult: false,
+        page: pageNumber,
+        query
+      }
+    })
+    return data
+  } catch (error) {
+    let message = 'Unknown Error'
+    if (error instanceof Error) message = error.message
+    console.error(message)
+  }
+}
+
+export const getSelectedMovie = async ({ id }: { id: string }): Promise<ISelectedFilm | undefined> => {
+  try {
+    const findFilmLink = `https://api.themoviedb.org/3/movie/${id}`
+    const data: ISelectedFilm = await axios.get(findFilmLink, {
+      params: {
+        api_key: API_KEY,
+        include_adult: false
+      }
+    })
+    return data
+  } catch (error) {
+    let message = 'Unknown Error'
+    if (error instanceof Error) message = error.message
+    console.error(
+      message,
+      '; You should pass object with "id" element as function parameter'
+    )
+  }
+}
+
+export const getCast = async ({ id }: { id: string }): Promise<ICast | undefined> => {
+  try {
+    const findFilmLink = `https://api.themoviedb.org/3/movie/${id}/credits`
+    const data: ICast = await axios.get(findFilmLink, {
+      params: {
+        api_key: API_KEY,
+        include_adult: false
+      }
+    })
+    return data
+  } catch (error) {
+    let message = 'Unknown Error'
+    if (error instanceof Error) message = error.message
+    console.error(
+      message,
+      '; You should pass object with "id" element as function parameter'
+    )
+  }
+}
+
+export const getReviews = async ({ id }: { id: string }): Promise<IReviews | undefined> => {
+  try {
+    const findFilmLink = `https://api.themoviedb.org/3/movie/${id}/reviews`
+    const data: IReviews = await axios.get(findFilmLink, {
+      params: {
+        api_key: API_KEY,
+        include_adult: false
+      }
+    })
+    return data
+  } catch (error) {
+    let message = 'Unknown Error'
+    if (error instanceof Error) message = error.message
+    console.error(
+      message,
+      '; You should pass object with "id" element as function parameter'
+    )
+  }
+}

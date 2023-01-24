@@ -1,0 +1,17 @@
+.castSection{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 15px;
+}
+
+.castCard{
+  width: 22%;
+  background-color: rgb(195, 213, 219);
+  padding: 10px;
+}
+
+.castImg{
+  width: 100%;
+  height: 72%;
+}

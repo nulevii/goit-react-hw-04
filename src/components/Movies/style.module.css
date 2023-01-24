@@ -1,0 +1,26 @@
+.filmsSection {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  justify-content: center;
+  gap: 10px;
+}
+
+.film {
+  width: 30%;
+
+  padding: 10px;
+  border-radius: 6px;
+  background-color: rgb(240, 238, 238);
+  text-decoration: none;
+}
+
+.filmImg {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.filmTitle {
+  color: rgb(87, 85, 85);
+
+}
